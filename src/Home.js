@@ -26,8 +26,8 @@ componentDidMount=async()=>{
 //////////////////////////////////////add todb
 addItemToDataBase=async(item)=>{
     const {user}=this.props.auth0
-    
-    axios.put(`${process.env.REACT_APP_BACKEND_URL}storeApiDatadb?email=${user.email}`,item)
+    console.log(user.email,"user.email result");
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}storeApiDatadb/${user.email}`,item)
     }
     render() {
         console.log(this.state.dataRenderFromApi,"this.state.dataRenderFromApi result inside render");
@@ -37,10 +37,10 @@ addItemToDataBase=async(item)=>{
             { 
             this.state.dataRenderFromApi.map(item=>{
                 // console.log(item,"item cardHome");
-                <CardHome 
+            return( <CardHome 
                 item={item}
                 addItemToDataBase={this.addItemToDataBase}
-                />
+                />)   
             
             })
             

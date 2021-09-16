@@ -15,71 +15,96 @@ class MyFavoriteBooks extends React.Component {
  getFromDataBase:[],
  updateObj:{},
  showForm:false,
- closeFunction:true
+ showFormUpdate:false,
+ closeFunction:true,
     }
    }
  ////////////////////////////////componentDidMount
  componentDidMount=async()=>{
   const {user}=this.props.auth0
-  const dbStoreData=axios.get(`${process.env.REACT_APP_BACKEND_URL}callFavortItem?email=${user.email}`)
+  const dbStoreData=await axios.get(`${process.env.REACT_APP_BACKEND_URL}callFavortItem?email=${user.email}`)
+  console.log(dbStoreData.data,"result");
   this.setState({
-    storeDatadataBase:dbStoreData.data
+    storeDatadataBase:dbStoreData.data,
+    showForm:true,
   })
+  console.log(this.state.storeDatadataBase);
 }
 //////////////////////////////////delete data
-// deletFromStorage=async(item)=>{
-//   const {user}=this.props.auth0
-//   const id=this.state.storeDatadataBase[item]._id
-// const urlDelet=axios.delet(`${process.env.REACT_APP_BACKEND_URL}deleteSelectItem/${id}`)
-// this.setState({
-//   storeDatadataBase:urlDelet.data
-// })
-// }
+deletFromStorage=async(item)=>{
+  const {user}=this.props.auth0
+  const id=this.state.storeDatadataBase[item]._id
+  console.log(id,"id result in delet function");
+const urlDelet=await axios.delete(`${process.env.REACT_APP_BACKEND_URL}deleteItem/${id}`)
+this.setState({
+  storeDatadataBase:urlDelet.data
+})
+
+const dbStoreData=await axios.get(`${process.env.REACT_APP_BACKEND_URL}callFavortItem?email=${user.email}`)
+console.log(dbStoreData.data,"delete function result");
+this.setState({
+  storeDatadataBase:dbStoreData.data,
+  showForm:true,
+})
+}
 //////////////////////////////////////update data
-// updateItem=async(item)=>{
-//   const item2=this.state.storeDatadataBase[item]
-//   this.setState({
-//     updateObj:item2,
-//     showForm:true,
-//   })
-// }
-//   updateinStorage=async(event)=>{
-//     event.preventDefualt()
-//     const {user}=this.props.auth0
-//       const itemid=this.state.storeDatadataBase._id
-//       let newUpdate={
-//         name:event.target.nameItem.value,
-//         img:event.target.imgItem.value
-//       }
-//       const updateUrl=axios.put(`${process.env.REACT_APP_BACKEND_URL}upDateItem/email=${itemid}`,newUpdate)
-//       const dbChoclate=axios.get(`${process.env.REACT_APP_BACKEND_URL}getfavortITem?email=${user.email}`)
-//       this.setState({
-//         storeDatadataBase:dbChoclate.data
-//       })
-// }
-handlerClose=()=>{
+updateItem=async(item)=>{
+  console.log(item,"item result select");
+  const item2=this.state.storeDatadataBase[item]
   this.setState({
-    closeFunction:false
+    updateObj:item2,
+    showFormUpdate:true,
   })
+}
+  updateinStorage=async(event)=>{
+    event.preventDefault()
+    const {user}=this.props.auth0
+      const itemid=this.state.updateObj._id
+      console.log(itemid,"itemid result to update");
+      let newUpdate={
+        title:event.target.nameItem.value,
+        imageUrl:event.target.imgItem.value
+      }
+      console.log(newUpdate,"newUpdate result");
+      const updateUrl=await axios.put(`${process.env.REACT_APP_BACKEND_URL}upDateItem/${itemid}`,newUpdate)
+      // this.setState({
+      //   storeDatadataBase:updateUrl.data
+      // })
+      const dbStoreData=await axios.get(`${process.env.REACT_APP_BACKEND_URL}callFavortItem?email=${user.email}`)
+      console.log(dbStoreData.data,"update function result");
+      this.setState({
+        storeDatadataBase:dbStoreData.data,
+        showForm:true,
+      })
+      console.log(this.state.storeDatadataBase,"this.state.storeDatadataBase inside update");
+}
+handlerClose=()=>{
+  console.log("inside close function");
+  this.setState({
+    closeFunction:false,
+  })
+  console.log("after close setState");
+
 }
 ///////////////////////////////////////////  
   render() {
     return(
      <div>
-      {/* {this.state.storeDatadataBase.map((storeData,idx)=>{
-        <RenderFavItem storeData={storeData}
+      { this.state.showForm && this.state.storeDatadataBase.map((storeData,idx)=>{
+      return  (<RenderFavItem storeData={storeData}
         idx={idx}
-        // deletFromStorage={this.deletFromStorage}
-        // updateinStorage={this.updateinStorage}
-        />
-      })}  */}
+        deletFromStorage={this.deletFromStorage}
+        updateItem={this.updateItem}
+        />)
+      })} 
 
-{/* {this.state.showForm&&
+{this.state.showFormUpdate&&
        <Update 
+      //  closeFunction={this.state.closeFunction}
        handlerClose={this.handlerClose}
-       updateItem={this.updateItem}
-       updateinStorage={this.updateinStorage}/>
-      } */}
+       updateinStorage={this.updateinStorage}
+       updateObj={this.state.updateObj}/>
+      }
      
      </div>
     )

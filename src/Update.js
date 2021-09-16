@@ -1,29 +1,40 @@
 import React from 'react'
-import {Form,Button} from 'react-bootstrap'
+import {Form,Button,Modal} from 'react-bootstrap'
 
 class Update extends React.Component {
+
     render() {
+      console.log(this.props.handlerClose,"this.props.handlerClose result");
         return (
             <div>
+                              <Modal.Dialog>
+  <Modal.Header closeButton>
+    <Modal.Title>Modal title</Modal.Title>
+  </Modal.Header>
               <Form onSubmit={(event)=>this.props.updateinStorage(event)}>
   <Form.Group className="mb-3" controlId="formBasicEmail">
     <Form.Label>name item</Form.Label>
-    <Form.Control type="text" name="nameItem" defaultValue={this.props.updateItem.name} placeholder="nameItem" />
+    <Form.Control type="text" name="nameItem" defaultValue={this.props.updateObj.title} placeholder="nameItem" />
     <Form.Text className="text-muted">
-      We'll never share your email with anyone else.
+      We'll never share your data with anyone else.
     </Form.Text>
   </Form.Group>
 
   <Form.Group className="mb-3" controlId="formBasicPassword">
     <Form.Label>imgUrl</Form.Label>
-    <Form.Control type="text" name="imgItem" defaultValue={this.props.updateItem.img} placeholder="imgUrl" />
+    <Form.Control type="text" name="imgItem" defaultValue={this.props.updateObj.imageUrl} placeholder="imgUrl" />
   </Form.Group>
   
-  <Button variant="primary" type="submit" onClick={this.props.handlerClose}>
-    close
+  <Button variant="primary" type="submit" >
+    update
   </Button>
 </Form>
-             
+<Modal.Footer>
+    <Button variant="secondary" onClick={this.props.handlerClose}>Close</Button>
+     </Modal.Footer>
+</Modal.Dialog> 
+
+   
             </div>
         )
     }
